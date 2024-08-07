@@ -1,0 +1,710 @@
+a. Illustrate the following UNIX Commands: Display date in dd/mm/yyyy (10)
+
+To display the date in dd/mm/yyyy format in UNIX, you can use the date command with format specifiers. Here is the command:
+
+date +"%d/%m/%Y"
+b. Develop a Shell program to generate factorial of 5 numbers
+
+#!/bin/bash
+
+factorial() {
+  number=$1
+  fact=1
+  for (( i=1; i<=number; i++ ))
+  do
+    fact=$((fact * i))
+  done
+  echo "Factorial of $number is $fact"
+}
+
+for number in {1..5}
+do
+  factorial $number
+done
+
+c. For the following table find the average waiting time and turnaround time using Priority CPU scheduling:
+
+#include <stdio.h>
+
+typedef struct {
+    int processId;
+    int arrivalTime;
+    int burstTime;
+    int priority;
+    int waitingTime;
+    int turnaroundTime;
+} Process;
+
+void calculateTimes(Process proc[], int n) {
+    int time = 0;
+    for (int i = 0; i < n; i++) {
+        if (time < proc[i].arrivalTime)
+            time = proc[i].arrivalTime;
+        proc[i].waitingTime = time - proc[i].arrivalTime;
+        proc[i].turnaroundTime = proc[i].waitingTime + proc[i].burstTime;
+        time += proc[i].burstTime;
+    }
+}
+
+int main() {
+    Process proc[] = {{0, 0, 4, 2, 0, 0}, {1, 1, 2, 3, 0, 0}, {2, 2, 7, 4, 0, 0}, {3, 3, 3, 1, 0, 0}};
+    int n = 4;
+
+    // Sort processes by priority
+    for (int i = 0; i < n-1; i++) {
+        for (int j = i+1; j < n; j++) {
+            if (proc[i].priority > proc[j].priority) {
+                Process temp = proc[i];
+                proc[i] = proc[j];
+                proc[j] = temp;
+            }
+        }
+    }
+
+    calculateTimes(proc, n);
+
+    printf("Process\tArrival Time\tBurst Time\tPriority\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n", proc[i].processId, proc[i].arrivalTime, proc[i].burstTime, proc[i].priority, proc[i].waitingTime, proc[i].turnaroundTime);
+    }
+
+    float avgWaitingTime = 0, avgTurnaroundTime = 0;
+    for (int i = 0; i < n; i++) {
+        avgWaitingTime += proc[i].waitingTime;
+        avgTurnaroundTime += proc[i].turnaroundTime;
+    }
+    avgWaitingTime /= n;
+    avgTurnaroundTime /= n;
+
+    printf("Average Waiting Time: %.2f\n", avgWaitingTime);
+    printf("Average Turnaround Time: %.2f\n", avgTurnaroundTime);
+
+    return 0;
+}
+
+ Illustrate the following UNIX Commands: Create and list the content in a file (10)
+
+To create a file and list its content, you can use the touch and cat commands:
+
+# Create a file
+touch filename.txt
+
+# Add content to the file
+echo "This is a sample text" > filename.txt
+
+# List the content of the file
+cat filename.txt
+
+#!/bin/bash
+
+echo "Enter the side of the square:"
+read side
+
+area=$((side * side))
+echo "Area of the square is: $area"
+
+c.Semaphore 
+
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+sem_t semaphore;
+
+void* threadFunc(void* arg) {
+    sem_wait(&semaphore);
+    printf("Entered critical section: %s\n", (char*)arg);
+    sleep(2);
+    printf("Exiting critical section: %s\n", (char*)arg);
+    sem_post(&semaphore);
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+
+    sem_init(&semaphore, 0, 1);
+
+    pthread_create(&t1, NULL, threadFunc, "Thread 1");
+    pthread_create(&t2, NULL, threadFunc, "Thread 2");
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    sem_destroy(&semaphore);
+
+    return 0;
+}
+
+Question 3
+a. Illustrate Getpid() system call:
+
+c
+Copy code
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+    pid_t pid = getpid();
+    printf("Process ID: %d\n", pid);
+    return 0;
+}
+b. Shell program to find whether given number is perfect square:
+
+sh
+Copy code
+#!/bin/bash
+
+echo "Enter a number:"
+read num
+
+sqrt=$(echo "sqrt($num)" | bc)
+sq=$(echo "$sqrt * $sqrt" | bc)
+
+if [ "$sq" -eq "$num" ]; then
+  echo "$num is a perfect square."
+else
+  echo "$num is not a perfect square."
+fi
+c. Implement Banker's Algorithm using C:
+
+c
+Copy code
+#include <stdio.h>
+#include <stdbool.h>
+
+int main() {
+    int n, m, i, j, k;
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+    printf("Enter number of resources: ");
+    scanf("%d", &m);
+
+    int alloc[n][m], max[n][m], avail[m];
+    printf("Enter allocation matrix: ");
+    for (i = 0; i < n; i++)
+        for (j = 0; j < m; j++)
+            scanf("%d", &alloc[i][j]);
+
+    printf("Enter maximum matrix: ");
+    for (i = 0; i < n; i++)
+        for (j = 0; j < m; j++)
+            scanf("%d", &max[i][j]);
+
+    printf("Enter available resources: ");
+    for (i = 0; i < m; i++)
+        scanf("%d", &avail[i]);
+
+    int f[n], ans[n], ind = 0;
+    for (k = 0; k < n; k++) {
+        f[k] = 0;
+    }
+    int need[n][m];
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            need[i][j] = max[i][j] - alloc[i][j];
+        }
+    }
+    int y = 0;
+    for (k = 0; k < n; k++) {
+        for (i = 0; i < n; i++) {
+            if (f[i] == 0) {
+                int flag = 0;
+                for (j = 0; j < m; j++) {
+                    if (need[i][j] > avail[j]) {
+                        flag = 1;
+                        break;
+                    }
+                }
+                if (flag == 0) {
+                    ans[ind++] = i;
+                    for (y = 0; y < m; y++)
+                        avail[y] += alloc[i][y];
+                    f[i] = 1;
+                }
+            }
+        }
+    }
+
+    printf("Following is the SAFE Sequence\n");
+    for (i = 0; i < n - 1; i++)
+        printf(" P%d ->", ans[i]);
+    printf(" P%d\n", ans[n - 1]);
+
+    return 0;
+}
+Question 4
+a. Display calendar of a year:
+
+sh
+Copy code
+cal -y
+b. Shell program to find whether given number is even prime:
+
+sh
+Copy code
+#!/bin/bash
+
+echo "Enter a number:"
+read num
+
+is_prime() {
+  n=$1
+  if [ $n -le 1 ]; then
+    echo "0"
+    return
+  fi
+  for (( i=2; i*i<=n; i++ ))
+  do
+    if [ $((n % i)) -eq 0 ]; then
+      echo "0"
+      return
+    fi
+  done
+  echo "1"
+}
+
+if [ $((num % 2)) -eq 0 ] && [ "$(is_prime $num)" -eq "1" ]; then
+  echo "$num is an even prime number."
+else
+  echo "$num is not an even prime number."
+fi
+c. Implement Threading using C:
+
+c
+Copy code
+#include <stdio.h>
+#include <pthread.h>
+
+void* threadFunc(void* arg) {
+    printf("Thread number %d\n", *(int*)arg);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[5];
+    int thread_args[5];
+
+    for (int i = 0; i < 5; i++) {
+        thread_args[i] = i;
+        pthread_create(&threads[i], NULL, threadFunc, &thread_args[i]);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    return 0;
+}
+Question 5
+a. UNIX Commands: cat, date:
+
+sh
+Copy code
+# Display the contents of a file
+cat filename.txt
+
+# Display the current date and time
+date
+b. Shell program to find area of circle:
+
+sh
+Copy code
+#!/bin/bash
+
+echo "Enter the radius of the circle:"
+read radius
+
+area=$(echo "scale=2; 3.14 * $radius * $radius" | bc)
+echo "Area of the circle is: $area"
+c. Implement Shared Memory using C:
+
+c
+Copy code
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <string.h>
+
+int main() {
+    key_t key = ftok("shmfile", 65);
+    int shmid = shmget(key, 1024, 0666|IPC_CREAT);
+    char *str = (char*) shmat(shmid, (void*)0, 0);
+
+    printf("Write Data: ");
+    fgets(str, 1024, stdin);
+
+    printf("Data written in memory: %s\n", str);
+    shmdt(str);
+
+    return 0;
+}
+
+1. Display current time in HH:MM:SS format
+sh
+Copy code
+# question6_a.sh
+date +"%T"
+2. Shell program to check if a number is palindrome
+sh
+Copy code
+# question6_b.sh
+#!/bin/bash
+
+echo "Enter a number:"
+read num
+
+temp=$num
+reverse=0
+
+while [ $num -gt 0 ]
+do
+  remainder=$(( num % 10 ))
+  reverse=$(( reverse * 10 + remainder ))
+  num=$(( num / 10 ))
+done
+
+if [ $temp -eq $reverse ]; then
+  echo "$temp is a palindrome"
+else
+  echo "$temp is not a palindrome"
+fi
+3. Shortest Job First (SJF) scheduling in C
+c
+Copy code
+// question6_c.c
+#include <stdio.h>
+
+typedef struct {
+    int processId;
+    int burstTime;
+    int waitingTime;
+    int turnaroundTime;
+} Process;
+
+void calculateTimes(Process proc[], int n) {
+    int time = 0;
+    for (int i = 0; i < n; i++) {
+        proc[i].waitingTime = time;
+        time += proc[i].burstTime;
+        proc[i].turnaroundTime = time;
+    }
+}
+
+int main() {
+    Process proc[] = {{0, 6, 0, 0}, {1, 8, 0, 0}, {2, 7, 0, 0}, {3, 3, 0, 0}};
+    int n = 4;
+
+    // Sort processes by burst time
+    for (int i = 0; i < n-1; i++) {
+        for (int j = i+1; j < n; j++) {
+            if (proc[i].burstTime > proc[j].burstTime) {
+                Process temp = proc[i];
+                proc[i] = proc[j];
+                proc[j] = temp;
+            }
+        }
+    }
+
+    calculateTimes(proc, n);
+
+    printf("Process\tBurst Time\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t%d\t\t%d\t\t%d\n", proc[i].processId, proc[i].burstTime, proc[i].waitingTime, proc[i].turnaroundTime);
+    }
+
+    float avgWaitingTime = 0, avgTurnaroundTime = 0;
+    for (int i = 0; i < n; i++) {
+        avgWaitingTime += proc[i].waitingTime;
+        avgTurnaroundTime += proc[i].turnaroundTime;
+    }
+    avgWaitingTime /= n;
+    avgTurnaroundTime /= n;
+
+    printf("Average Waiting Time: %.2f\n", avgWaitingTime);
+    printf("Average Turnaround Time: %.2f\n", avgTurnaroundTime);
+
+    return 0;
+}
+4. List all files in the current directory
+sh
+Copy code
+# question7_a.sh
+ls
+5. Shell program to find sum of digits of a number
+sh
+Copy code
+# question7_b.sh
+#!/bin/bash
+
+echo "Enter a number:"
+read num
+
+sum=0
+while [ $num -gt 0 ]
+do
+  sum=$((sum + num % 10))
+  num=$((num / 10))
+done
+
+echo "Sum of digits is $sum"
+6. Implement Readers-Writers problem using C
+c
+Copy code
+// question7_c.c
+#include <pthread.h>
+#include <semaphore.h>
+#include <stdio.h>
+
+sem_t wrt;
+pthread_mutex_t mutex;
+int count = 1;
+int numreader = 0;
+
+void *writer(void *wno) {
+    sem_wait(&wrt);
+    count = count * 2;
+    printf("Writer %d modified count to %d\n", (*((int *)wno)), count);
+    sem_post(&wrt);
+}
+
+void *reader(void *rno) {
+    pthread_mutex_lock(&mutex);
+    numreader++;
+    if (numreader == 1) {
+        sem_wait(&wrt);
+    }
+    pthread_mutex_unlock(&mutex);
+    printf("Reader %d: read count as %d\n", *((int *)rno), count);
+    pthread_mutex_lock(&mutex);
+    numreader--;
+    if (numreader == 0) {
+        sem_post(&wrt);
+    }
+    pthread_mutex_unlock(&mutex);
+}
+
+int main() {
+    pthread_t read[10], write[5];
+    pthread_mutex_init(&mutex, NULL);
+    sem_init(&wrt, 0, 1);
+
+    int a[10] = {1,2,3,4,5,6,7,8,9,10}; 
+    for(int i = 0; i < 10; i++) {
+        pthread_create(&read[i], NULL, (void *)reader, (void *)&a[i]);
+    }
+    for(int i = 0; i < 5; i++) {
+        pthread_create(&write[i], NULL, (void *)writer, (void *)&a[i]);
+    }
+    for(int i = 0; i < 10; i++) {
+        pthread_join(read[i], NULL);
+    }
+    for(int i = 0; i < 5; i++) {
+        pthread_join(write[i], NULL);
+    }
+
+    pthread_mutex_destroy(&mutex);
+    sem_destroy(&wrt);
+
+    return 0;
+}
+7. Display environment variables
+sh
+Copy code
+# question8_a.sh
+printenv
+8. Shell program to reverse a string
+sh
+Copy code
+# question8_b.sh
+#!/bin/bash
+
+echo "Enter a string:"
+read str
+
+echo "$str" | rev
+9. Dining Philosophers problem in C
+c
+Copy code
+// question8_c.c
+#include <pthread.h>
+#include <semaphore.h>
+#include <stdio.h>
+#include <unistd.h>
+
+sem_t chopsticks[5];
+
+void *philosopher(void *num) {
+    int phil = *(int *)num;
+
+    printf("Philosopher %d is thinking\n", phil);
+    sleep(1);
+    printf("Philosopher %d is hungry\n", phil);
+    sem_wait(&chopsticks[phil]);
+    sem_wait(&chopsticks[(phil+1)%5]);
+
+    printf("Philosopher %d is eating\n", phil);
+    sleep(1);
+
+    sem_post(&chopsticks[(phil+1)%5]);
+    sem_post(&chopsticks[phil]);
+    printf("Philosopher %d finished eating\n", phil);
+
+    return NULL;
+}
+
+int main() {
+    pthread_t thread_id[5];
+    int philosophers[5] = {0, 1, 2, 3, 4};
+
+    for (int i = 0; i < 5; i++) {
+        sem_init(&chopsticks[i], 0, 1);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        pthread_create(&thread_id[i], NULL, philosopher, &philosophers[i]);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        pthread_join(thread_id[i], NULL);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        sem_destroy(&chopsticks[i]);
+    }
+
+    return 0;
+}
+10. Shell program to find the largest of three numbers
+sh
+Copy code
+# question9_b.sh
+#!/bin/bash
+
+echo "Enter three numbers:"
+read a b c
+
+if [ $a -ge $b ] && [ $a -ge $c ]; then
+  echo "$a is the largest number"
+elif [ $b -ge $a ] && [ $b -ge $c ]; then
+  echo "$b is the largest number"
+else
+  echo "$c is the largest number"
+fi
+11. Display the first 10 lines of a file
+sh
+Copy code
+# question9_a.sh
+head -n 10 filename.txt
+12. Multithreading in Python
+python
+Copy code
+# question9_c.py
+import threading
+
+def print_number(number):
+    print(f"Thread number {number}")
+
+threads = []
+for i in range(5):
+    t = threading.Thread(target=print_number, args=(i,))
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()
+13. Shell program to check if a number is prime
+sh
+Copy code
+# question10_b.sh
+#!/bin/bash
+
+echo "Enter a number:"
+read num
+
+is_prime() {
+  n=$1
+  if [ $n -le 1 ]; then
+    echo "0"
+    return
+  fi
+  for (( i=2; i*i<=n; i++ ))
+  do
+    if [ $((n % i)) -eq 0 ]; then
+      echo "0"
+      return
+    fi
+  done
+  echo "1"
+}
+
+if [ "$(is_prime $num)" -eq "1" ]; then
+  echo "$num is a prime number."
+else
+  echo "$num is not a prime number."
+fi
+14. Display last 10 lines of a file
+sh
+Copy code
+# question10_a.sh
+tail -n 10 filename.txt
+15. C program to implement a simple shell
+c
+Copy code
+// question10_c.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+#define MAX_INPUT_SIZE 1024
+#define MAX_TOKENS 64
+#define DELIMITERS " \t\r\n\a"
+
+void execute(char **args) {
+    pid_t pid = fork();
+    if (pid == 0) {
+        if (execvp(args[0], args) == -1) {
+            perror("Error executing command");
+        }
+        exit(EXIT_FAILURE);
+    } else if (pid < 0) {
+        perror("Error forking");
+    } else {
+        wait(NULL);
+    }
+}
+
+char **parse_input(char *input) {
+    int position = 0;
+    char **tokens = malloc(MAX_TOKENS * sizeof(char *));
+    char *token = strtok(input, DELIMITERS);
+
+    while (token != NULL) {
+        tokens[position++] = token;
+        token = strtok(NULL, DELIMITERS);
+    }
+    tokens[position] = NULL;
+    return tokens;
+}
+
+int main() {
+    char input[MAX_INPUT_SIZE];
+    char **args;
+
+    while (1) {
+        printf("shell> ");
+        fgets(input, MAX_INPUT_SIZE, stdin);
+
+        if (strcmp(input, "exit\n") == 0) {
+            break;
+        }
+
+        args = parse_input(input);
+        execute(args);
+        free(args);
+    }
+
+    return 0;
+}
